@@ -289,7 +289,7 @@ func (c *Context) GetStringMapStringSlice(key string) (smss map[string][]string)
 	return
 }
 
-// 强制类型转化
+// Force Type conver
 func StringToInt(s string) (i int) {
 	i, err := strconv.Atoi(s)
 	if err != nil {
