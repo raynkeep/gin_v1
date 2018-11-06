@@ -10,7 +10,22 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"unicode"
 )
+
+func UcFirst(str string) string {
+	for i, v := range str {
+		return string(unicode.ToUpper(v)) + str[i+1:]
+	}
+	return ""
+}
+
+func LcFirst(str string) string {
+	for i, v := range str {
+		return string(unicode.ToLower(v)) + str[i+1:]
+	}
+	return ""
+}
 
 func mapForm(ptr interface{}, form map[string][]string) error {
 	typ := reflect.TypeOf(ptr).Elem()
@@ -55,6 +70,12 @@ func mapForm(ptr interface{}, form map[string][]string) error {
 			}
 		}
 		inputValue, exists := form[inputFieldName]
+
+		// try to find with first char lower case
+		if !exists {
+			inputFieldName = LcFirst(inputFieldName)
+			inputValue, exists = form[inputFieldName]
+		}
 
 		if !exists {
 			if defaultValue == "" {
