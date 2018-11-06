@@ -11,7 +11,7 @@ import (
 	"os"
 	"sync"
 
-	"github.com/gin-gonic/gin/render"
+	"github.com/xiuno/gin/render"
 )
 
 const defaultMultipartMemory = 32 << 20 // 32 MB

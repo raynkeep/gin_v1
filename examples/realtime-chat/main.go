@@ -6,7 +6,7 @@ import (
 	"math/rand"
 	"net/http"
 
-	"github.com/gin-gonic/gin"
+	"github.com/xiuno/gin"
 )
 
 func main() {

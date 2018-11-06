@@ -18,8 +18,8 @@ import (
 	"time"
 
 	"github.com/gin-contrib/sse"
-	"github.com/gin-gonic/gin/binding"
-	"github.com/gin-gonic/gin/render"
+	"github.com/xiuno/gin/binding"
+	"github.com/xiuno/gin/render"
 	"strconv"
 )
 
@@ -289,7 +289,7 @@ func (c *Context) GetStringMapStringSlice(key string) (smss map[string][]string)
 	return
 }
 
-// Force Type conver
+// Force Type convert
 func StringToInt(s string) (i int) {
 	i, err := strconv.Atoi(s)
 	if err != nil {
@@ -366,7 +366,7 @@ func IntToString(i int) (s string) {
 func (c *Context) Param(key string) string {
 	v := c.Params.ByName(key)
 	if v == "" {
-		v := c.Query(key)
+		v = c.Query(key)
 		if v == "" {
 			v = c.PostForm(key)
 			if v == "" {

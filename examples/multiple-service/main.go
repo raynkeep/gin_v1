@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/gin-gonic/gin"
+	"github.com/xiuno/gin"
 	"golang.org/x/sync/errgroup"
 )
 

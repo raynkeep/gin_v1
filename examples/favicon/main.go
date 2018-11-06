@@ -3,7 +3,7 @@ package main
 import (
 	"net/http"
 
-	"github.com/gin-gonic/gin"
+	"github.com/xiuno/gin"
 	"github.com/thinkerou/favicon"
 )
 
