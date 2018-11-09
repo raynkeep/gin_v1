@@ -173,6 +173,33 @@ func (c *Context) Error(err error) *Error {
 	return parsedError
 }
 
+
+func messageEncode(code string, message string, data ...interface{}) (str string) {
+	dataStr := "{}"
+	message = strings.Replace(message, `"`, `\"`)
+	if len(data) > 0 && data[0] != nil {
+		b, err := json.Marshal(data[0])
+		if err == nil {
+			dataStr = string(b)
+		}
+		str = fmt.Sprintf(`{"code": "%v", "message": "%v", "data": %v}`, code, message, dataStr)
+	} else {
+		str = fmt.Sprintf(`{"code": "%v", "message": "%v"}`, code, message)
+	}
+	return str
+}
+
+//func MessageDecode(s string) (msg JsonMessage) {
+//	json.Unmarshal([]byte(s), &msg)
+//	return msg
+//}
+
+func (ctx *Context) Message(code string, message string, data ...interface{}) {
+	s := messageEncode(code, message, data...)
+	ctx.String(200, s)
+	ctx.Abort()
+}
+
 /************************************/
 /******** METADATA MANAGEMENT********/
 /************************************/
