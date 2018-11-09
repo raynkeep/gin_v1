@@ -16,6 +16,8 @@ import (
 	"os"
 	"strings"
 	"time"
+	"encoding/json"
+	"fmt"
 
 	"github.com/gin-contrib/sse"
 	"github.com/xiuno/gin/binding"
@@ -173,10 +175,9 @@ func (c *Context) Error(err error) *Error {
 	return parsedError
 }
 
-
 func messageEncode(code string, message string, data ...interface{}) (str string) {
 	dataStr := "{}"
-	message = strings.Replace(message, `"`, `\"`)
+	message = strings.Replace(message, `"`, `\"`, -1)
 	if len(data) > 0 && data[0] != nil {
 		b, err := json.Marshal(data[0])
 		if err == nil {
