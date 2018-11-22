@@ -16,12 +16,12 @@ import (
 	"os"
 	"strings"
 	"time"
-	"encoding/json"
 	"fmt"
 
 	"github.com/gin-contrib/sse"
 	"github.com/xiuno/gin/binding"
 	"github.com/xiuno/gin/render"
+	"github.com/liamylian/jsontime"
 	"strconv"
 )
 
@@ -176,6 +176,9 @@ func (c *Context) Error(err error) *Error {
 }
 
 func messageEncode(code string, message string, data ...interface{}) (str string) {
+
+	var json = jsontime.ConfigWithCustomTimeFormat
+
 	dataStr := "{}"
 	message = strings.Replace(message, `"`, `\"`, -1)
 	if len(data) > 0 && data[0] != nil {
@@ -197,6 +200,7 @@ func messageEncode(code string, message string, data ...interface{}) (str string
 
 func (ctx *Context) Message(code string, message string, data ...interface{}) {
 	s := messageEncode(code, message, data...)
+	//ctx.String(200, s+"\r\n")
 	ctx.String(200, s)
 	ctx.Abort()
 }
