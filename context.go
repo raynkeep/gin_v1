@@ -6,6 +6,7 @@ package gin
 
 import (
 	"errors"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"math"
@@ -16,12 +17,11 @@ import (
 	"os"
 	"strings"
 	"time"
-	"fmt"
 
 	"github.com/gin-contrib/sse"
+	"github.com/liamylian/jsontime"
 	"github.com/xiuno/gin/binding"
 	"github.com/xiuno/gin/render"
-	"github.com/liamylian/jsontime"
 	"strconv"
 )
 
@@ -50,6 +50,9 @@ type Context struct {
 	handlers HandlersChain
 	index    int8
 
+	PostIsJson bool
+	PostJson   map[string]interface{}
+
 	engine *Engine
 
 	// Keys is a key/value pair exclusively for the context of each request.
@@ -72,6 +75,7 @@ func (c *Context) reset() {
 	c.handlers = nil
 	c.index = -1
 	c.Keys = nil
+	c.PostJson = nil
 	c.Errors = c.Errors[0:0]
 	c.Accepted = nil
 }
@@ -523,6 +527,12 @@ func (c *Context) GetQueryMap(key string) (map[string]string, bool) {
 // when it exists, otherwise it returns an empty string `("")`.
 func (c *Context) PostForm(key string) string {
 	value, _ := c.GetPostForm(key)
+	if value == "" && c.PostIsJson {
+		v, ok := c.PostJson[key]
+		if ok {
+			value = fmt.Sprintf("%v", v)
+		}
+	}
 	return value
 }
 

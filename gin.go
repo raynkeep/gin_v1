@@ -10,7 +10,7 @@ import (
 	"net/http"
 	"os"
 	"sync"
-
+	"encoding/json"
 	"github.com/xiuno/gin/render"
 )
 
@@ -343,11 +343,28 @@ func (engine *Engine) HandleContext(c *Context) {
 
 func (engine *Engine) handleHTTPRequest(c *Context) {
 	httpMethod := c.Request.Method
+	contentType := c.Request.Header.Get("Content-Type")
 	path := c.Request.URL.Path
 	unescape := false
 	if engine.UseRawPath && len(c.Request.URL.RawPath) > 0 {
 		path = c.Request.URL.RawPath
 		unescape = engine.UnescapePathValues
+	}
+
+	if contentType == "application/json" {
+		c.PostIsJson = true
+		c.PostJson = make(map[string]interface{})
+
+		buf := make([]byte, 1024)
+		n, _ := c.Request.Body.Read(buf)
+		if n > 2 {
+			err := json.Unmarshal(buf[0:n], &c.PostJson)
+			if err != nil {
+				//log.Println("Unmarshal() error:"+string(buf[0:n]))
+			}
+		}
+	} else {
+		c.PostIsJson = false
 	}
 
 	// Find root of the tree for the given HTTP method
