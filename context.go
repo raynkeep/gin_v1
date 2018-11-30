@@ -202,11 +202,12 @@ func messageEncode(code string, message string, data ...interface{}) (str string
 //	return msg
 //}
 
-func (ctx *Context) Message(code string, message string, data ...interface{}) {
+func (ctx *Context) Message(code string, message string, data ...interface{}) bool {
 	s := messageEncode(code, message, data...)
 	//ctx.String(200, s+"\r\n")
 	ctx.String(200, s)
 	ctx.Abort()
+	return true
 }
 
 /************************************/
