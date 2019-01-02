@@ -4,18 +4,18 @@
 
 // +build tools
 
-// This file exists to cause `go mod` and `go get` to believe these tools
+// This package exists to cause `go mod` and `go get` to believe these tools
 // are dependencies, even though they are not runtime dependencies of any
 // gin package. This means they will appear in `go.mod` file, but will not
 // be a part of the build.
 
-package gin
+package tools
 
 import (
 	_ "github.com/campoy/embedmd"
 	_ "github.com/client9/misspell/cmd/misspell"
 	_ "github.com/dustin/go-broadcast"
-	_ "github.com/xiuno/autotls"
+	_ "github.com/gin-gonic/autotls"
 	_ "github.com/jessevdk/go-assets"
 	_ "github.com/manucorporat/stats"
 	_ "github.com/thinkerou/favicon"

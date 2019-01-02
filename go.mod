@@ -1,4 +1,4 @@
-module github.com/gin-gonic/gin
+module github.com/xiuno/gin
 
 require (
 	github.com/campoy/embedmd v0.0.0-20171205015432-c59ce00e0296

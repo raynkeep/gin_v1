@@ -10,24 +10,17 @@ import (
 	"strconv"
 	"strings"
 	"time"
-	"unicode"
 )
 
-func UcFirst(str string) string {
-	for i, v := range str {
-		return string(unicode.ToUpper(v)) + str[i+1:]
-	}
-	return ""
-}
-
-func LcFirst(str string) string {
-	for i, v := range str {
-		return string(unicode.ToLower(v)) + str[i+1:]
-	}
-	return ""
+func mapUri(ptr interface{}, m map[string][]string) error {
+	return mapFormByTag(ptr, m, "uri")
 }
 
 func mapForm(ptr interface{}, form map[string][]string) error {
+	return mapFormByTag(ptr, form, "form")
+}
+
+func mapFormByTag(ptr interface{}, form map[string][]string, tag string) error {
 	typ := reflect.TypeOf(ptr).Elem()
 	val := reflect.ValueOf(ptr).Elem()
 	for i := 0; i < typ.NumField(); i++ {
@@ -38,7 +31,7 @@ func mapForm(ptr interface{}, form map[string][]string) error {
 		}
 
 		structFieldKind := structField.Kind()
-		inputFieldName := typeField.Tag.Get("form")
+		inputFieldName := typeField.Tag.Get(tag)
 		inputFieldNameList := strings.Split(inputFieldName, ",")
 		inputFieldName = inputFieldNameList[0]
 		var defaultValue string
@@ -62,7 +55,7 @@ func mapForm(ptr interface{}, form map[string][]string) error {
 				structFieldKind = structField.Kind()
 			}
 			if structFieldKind == reflect.Struct {
-				err := mapForm(structField.Addr().Interface(), form)
+				err := mapFormByTag(structField.Addr().Interface(), form, tag)
 				if err != nil {
 					return err
 				}
@@ -70,12 +63,6 @@ func mapForm(ptr interface{}, form map[string][]string) error {
 			}
 		}
 		inputValue, exists := form[inputFieldName]
-
-		// try to find with first char lower case
-		if !exists {
-			inputFieldName = LcFirst(inputFieldName)
-			inputValue, exists = form[inputFieldName]
-		}
 
 		if !exists {
 			if defaultValue == "" {

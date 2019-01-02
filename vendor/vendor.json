@@ -17,11 +17,6 @@
 			"revisionTime": "2017-01-09T09:34:21Z"
 		},
 		{
-			"origin": "vendor.json",
-			"path": "github.com/gin-gonic/gin/vendor/vendor.json",
-			"revision": ""
-		},
-		{
 			"checksumSHA1": "mE9XW26JSpe4meBObM6J/Oeq0eg=",
 			"path": "github.com/golang/protobuf/proto",
 			"revision": "aa810b61a9c79d51363740d207bb46cf8e620ed5",
@@ -90,5 +85,5 @@
 			"versionExact": "v2.2.1"
 		}
 	],
-	"rootPath": "github.com/gin-gonic/gin"
+	"rootPath": "github.com/xiuno/gin"
 }

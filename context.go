@@ -6,7 +6,6 @@ package gin
 
 import (
 	"errors"
-	"fmt"
 	"io"
 	"io/ioutil"
 	"math"
@@ -19,10 +18,8 @@ import (
 	"time"
 
 	"github.com/gin-contrib/sse"
-	"github.com/liamylian/jsontime"
 	"github.com/xiuno/gin/binding"
 	"github.com/xiuno/gin/render"
-	"strconv"
 )
 
 // Content-Type MIME of the most common data formats.
@@ -34,6 +31,7 @@ const (
 	MIMEPlain             = binding.MIMEPlain
 	MIMEPOSTForm          = binding.MIMEPOSTForm
 	MIMEMultipartPOSTForm = binding.MIMEMultipartPOSTForm
+	MIMEYAML              = binding.MIMEYAML
 	BodyBytesKey          = "_gin-gonic/gin/bodybyteskey"
 )
 
@@ -49,9 +47,6 @@ type Context struct {
 	Params   Params
 	handlers HandlersChain
 	index    int8
-
-	PostIsJson bool
-	PostJson   map[string]interface{}
 
 	engine *Engine
 
@@ -75,7 +70,6 @@ func (c *Context) reset() {
 	c.handlers = nil
 	c.index = -1
 	c.Keys = nil
-	c.PostJson = nil
 	c.Errors = c.Errors[0:0]
 	c.Accepted = nil
 }
@@ -177,37 +171,6 @@ func (c *Context) Error(err error) *Error {
 
 	c.Errors = append(c.Errors, parsedError)
 	return parsedError
-}
-
-func messageEncode(code string, message string, data ...interface{}) (str string) {
-
-	var json = jsontime.ConfigWithCustomTimeFormat
-
-	dataStr := "{}"
-	message = strings.Replace(message, `"`, `\"`, -1)
-	if len(data) > 0 && data[0] != nil {
-		b, err := json.Marshal(data[0])
-		if err == nil {
-			dataStr = string(b)
-		}
-		str = fmt.Sprintf(`{"code": "%v", "message": "%v", "data": %v}`, code, message, dataStr)
-	} else {
-		str = fmt.Sprintf(`{"code": "%v", "message": "%v"}`, code, message)
-	}
-	return str
-}
-
-//func MessageDecode(s string) (msg JsonMessage) {
-//	json.Unmarshal([]byte(s), &msg)
-//	return msg
-//}
-
-func (ctx *Context) Message(code string, message string, data ...interface{}) bool {
-	s := messageEncode(code, message, data...)
-	//ctx.String(200, s+"\r\n")
-	ctx.String(200, s)
-	ctx.Abort()
-	return true
 }
 
 /************************************/
@@ -326,69 +289,6 @@ func (c *Context) GetStringMapStringSlice(key string) (smss map[string][]string)
 	return
 }
 
-// Force Type convert
-func StringToInt(s string) (i int) {
-	i, err := strconv.Atoi(s)
-	if err != nil {
-		return 0
-	} else {
-		return i
-	}
-}
-
-func StringToInt32(s string) (i int32) {
-	return int32(StringToInt(s))
-}
-
-func StringToUint(s string) (i uint) {
-	k, _ := strconv.ParseUint(s, 10, 64)
-	i = uint(k)
-	return i
-}
-
-func StringToUint32(s string) (i uint32) {
-	return uint32(StringToUint(s))
-}
-
-func StringToInt64(s string) (i int64) {
-	i, err := strconv.ParseInt(s, 10, 64)
-	if err != nil {
-		return 0
-	} else {
-		return i
-	}
-}
-
-func StringToUint64(s string) (i uint64) {
-	return uint64(StringToInt64(s))
-}
-
-func StringToFloat32(s string) (i float32) {
-	v, err := strconv.ParseFloat(s, 32)
-	if err != nil {
-		return 0
-	}
-	return float32(v)
-}
-
-func StringToFloat64(s string) (i float64) {
-	v, err := strconv.ParseFloat(s, 64)
-	if err != nil {
-		return 0
-	}
-	return v
-}
-
-func Int64ToString(i int64) (s string) {
-	s = strconv.FormatInt(i, 10)
-	return s
-}
-
-func IntToString(i int) (s string) {
-	s = strconv.Itoa(i)
-	return s
-}
-
 /************************************/
 /************ INPUT DATA ************/
 /************************************/
@@ -399,59 +299,8 @@ func IntToString(i int) (s string) {
 //         // a GET request to /user/john
 //         id := c.Param("id") // id == "john"
 //     })
-// Fetch Data from GET POST COOKIE Route/Param
 func (c *Context) Param(key string) string {
-	v := c.Params.ByName(key)
-	if v == "" {
-		v = c.Query(key)
-		if v == "" {
-			v = c.PostForm(key)
-			if v == "" {
-				v, _ = c.Cookie(key)
-			}
-		}
-	}
-	return v
-}
-
-func (c *Context) ParamInt(key string) int {
-	v := c.Param(key)
-	return StringToInt(v)
-}
-
-func (c *Context) ParamUint(key string) uint {
-	v := c.Param(key)
-	return StringToUint(v)
-}
-
-func (c *Context) ParamInt32(key string) int32 {
-	v := c.Param(key)
-	return StringToInt32(v)
-}
-
-func (c *Context) ParamUint32(key string) uint32 {
-	v := c.Param(key)
-	return StringToUint32(v)
-}
-
-func (c *Context) ParamInt64(key string) int64 {
-	v := c.Param(key)
-	return StringToInt64(v)
-}
-
-func (c *Context) ParamUint64(key string) uint64 {
-	v := c.Param(key)
-	return StringToUint64(v)
-}
-
-func (c *Context) ParamFloat(key string) float32 {
-	v := c.Param(key)
-	return StringToFloat32(v)
-}
-
-func (c *Context) ParamFloat64(key string) float64 {
-	v := c.Param(key)
-	return StringToFloat64(v)
+	return c.Params.ByName(key)
 }
 
 // Query returns the keyed url query value if it exists,
@@ -528,12 +377,6 @@ func (c *Context) GetQueryMap(key string) (map[string]string, bool) {
 // when it exists, otherwise it returns an empty string `("")`.
 func (c *Context) PostForm(key string) string {
 	value, _ := c.GetPostForm(key)
-	if value == "" && c.PostIsJson {
-		v, ok := c.PostJson[key]
-		if ok {
-			value = fmt.Sprintf("%v", v)
-		}
-	}
 	return value
 }
 
@@ -682,15 +525,30 @@ func (c *Context) BindQuery(obj interface{}) error {
 	return c.MustBindWith(obj, binding.Query)
 }
 
-// MustBindWith binds the passed struct pointer using the specified binding engine.
-// It will abort the request with HTTP 400 if any error ocurrs.
-// See the binding package.
-func (c *Context) MustBindWith(obj interface{}, b binding.Binding) (err error) {
-	if err = c.ShouldBindWith(obj, b); err != nil {
-		c.AbortWithError(http.StatusBadRequest, err).SetType(ErrorTypeBind)
-	}
+// BindYAML is a shortcut for c.MustBindWith(obj, binding.YAML).
+func (c *Context) BindYAML(obj interface{}) error {
+	return c.MustBindWith(obj, binding.YAML)
+}
 
-	return
+// BindUri binds the passed struct pointer using binding.Uri.
+// It will abort the request with HTTP 400 if any error occurs.
+func (c *Context) BindUri(obj interface{}) error {
+	if err := c.ShouldBindUri(obj); err != nil {
+		c.AbortWithError(http.StatusBadRequest, err).SetType(ErrorTypeBind)
+		return err
+	}
+	return nil
+}
+
+// MustBindWith binds the passed struct pointer using the specified binding engine.
+// It will abort the request with HTTP 400 if any error occurs.
+// See the binding package.
+func (c *Context) MustBindWith(obj interface{}, b binding.Binding) error {
+	if err := c.ShouldBindWith(obj, b); err != nil {
+		c.AbortWithError(http.StatusBadRequest, err).SetType(ErrorTypeBind)
+		return err
+	}
+	return nil
 }
 
 // ShouldBind checks the Content-Type to select a binding engine automatically,
@@ -721,6 +579,20 @@ func (c *Context) ShouldBindQuery(obj interface{}) error {
 	return c.ShouldBindWith(obj, binding.Query)
 }
 
+// ShouldBindYAML is a shortcut for c.ShouldBindWith(obj, binding.YAML).
+func (c *Context) ShouldBindYAML(obj interface{}) error {
+	return c.ShouldBindWith(obj, binding.YAML)
+}
+
+// ShouldBindUri binds the passed struct pointer using the specified binding engine.
+func (c *Context) ShouldBindUri(obj interface{}) error {
+	m := make(map[string][]string)
+	for _, v := range c.Params {
+		m[v.Key] = []string{v.Value}
+	}
+	return binding.Uri.BindUri(m, obj)
+}
+
 // ShouldBindWith binds the passed struct pointer using the specified binding engine.
 // See the binding package.
 func (c *Context) ShouldBindWith(obj interface{}, b binding.Binding) error {
@@ -732,9 +604,7 @@ func (c *Context) ShouldBindWith(obj interface{}, b binding.Binding) error {
 //
 // NOTE: This method reads the body before binding. So you should use
 // ShouldBindWith for better performance if you need to call only once.
-func (c *Context) ShouldBindBodyWith(
-	obj interface{}, bb binding.BindingBody,
-) (err error) {
+func (c *Context) ShouldBindBodyWith(obj interface{}, bb binding.BindingBody) (err error) {
 	var body []byte
 	if cb, ok := c.Get(BodyBytesKey); ok {
 		if cbb, ok := cb.([]byte); ok {
@@ -1070,34 +940,6 @@ func (c *Context) NegotiateFormat(offered ...string) string {
 // SetAccepted sets Accept header data.
 func (c *Context) SetAccepted(formats ...string) {
 	c.Accepted = formats
-}
-
-/************************************/
-/***** GOLANG.ORG/X/NET/CONTEXT *****/
-/************************************/
-
-// Deadline returns the time when work done on behalf of this context
-// should be canceled. Deadline returns ok==false when no deadline is
-// set. Successive calls to Deadline return the same results.
-func (c *Context) Deadline() (deadline time.Time, ok bool) {
-	return
-}
-
-// Done returns a channel that's closed when work done on behalf of this
-// context should be canceled. Done may return nil if this context can
-// never be canceled. Successive calls to Done return the same value.
-func (c *Context) Done() <-chan struct{} {
-	return nil
-}
-
-// Err returns a non-nil error value after Done is closed,
-// successive calls to Err return the same error.
-// If Done is not yet closed, Err returns nil.
-// If Done is closed, Err returns a non-nil error explaining why:
-// Canceled if the context was canceled
-// or DeadlineExceeded if the context's deadline passed.
-func (c *Context) Err() error {
-	return nil
 }
 
 // Value returns the value associated with this context for key, or nil

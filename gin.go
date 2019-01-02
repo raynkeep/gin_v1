@@ -5,12 +5,13 @@
 package gin
 
 import (
+	"fmt"
 	"html/template"
 	"net"
 	"net/http"
 	"os"
 	"sync"
-	"encoding/json"
+
 	"github.com/xiuno/gin/render"
 )
 
@@ -321,6 +322,23 @@ func (engine *Engine) RunUnix(file string) (err error) {
 	return
 }
 
+// RunFd attaches the router to a http.Server and starts listening and serving HTTP requests
+// through the specified file descriptor.
+// Note: this method will block the calling goroutine indefinitely unless an error happens.
+func (engine *Engine) RunFd(fd int) (err error) {
+	debugPrint("Listening and serving HTTP on fd@%d", fd)
+	defer func() { debugPrintError(err) }()
+
+	f := os.NewFile(uintptr(fd), fmt.Sprintf("fd@%d", fd))
+	listener, err := net.FileListener(f)
+	if err != nil {
+		return
+	}
+	defer listener.Close()
+	err = http.Serve(listener, engine)
+	return
+}
+
 // ServeHTTP conforms to the http.Handler interface.
 func (engine *Engine) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	c := engine.pool.Get().(*Context)
@@ -343,28 +361,11 @@ func (engine *Engine) HandleContext(c *Context) {
 
 func (engine *Engine) handleHTTPRequest(c *Context) {
 	httpMethod := c.Request.Method
-	contentType := c.Request.Header.Get("Content-Type")
 	path := c.Request.URL.Path
 	unescape := false
 	if engine.UseRawPath && len(c.Request.URL.RawPath) > 0 {
 		path = c.Request.URL.RawPath
 		unescape = engine.UnescapePathValues
-	}
-
-	if contentType == "application/json" {
-		c.PostIsJson = true
-		c.PostJson = make(map[string]interface{})
-
-		buf := make([]byte, 1024)
-		n, _ := c.Request.Body.Read(buf)
-		if n > 2 {
-			err := json.Unmarshal(buf[0:n], &c.PostJson)
-			if err != nil {
-				//log.Println("Unmarshal() error:"+string(buf[0:n]))
-			}
-		}
-	} else {
-		c.PostIsJson = false
 	}
 
 	// Find root of the tree for the given HTTP method
