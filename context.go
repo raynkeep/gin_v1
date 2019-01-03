@@ -6,6 +6,7 @@ package gin
 
 import (
 	"errors"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"math"
@@ -74,21 +75,29 @@ func (c *Context) reset() {
 	c.Accepted = nil
 }
 
-func (c *Context) Message(code string, message string, data interface{}) {
+func (c *Context) Message(code string, message string, data ...interface{}) {
 	obj := H{}
 	obj["code"] = code
 	obj["message"] = message
 
-	d, isH := data.(H)
-	if isH {
-		for k, v := range d {
-			obj[k] = v
+	for argNum, arg := range data {
+		d, isH := arg.(H)
+		if isH {
+			for k, v := range d {
+				obj[k] = v
+			}
+		} else {
+			k := fmt.Sprintf("%v", argNum)
+			if k == "0" {
+				k = "data"
+			} else {
+				k = "data_" + k
+			}
+			obj[k] = arg
 		}
-	} else {
-		obj["data"] = data
 	}
 
-	c.JSON(200, obj)
+	c.JSON(http.StatusOK, obj)
 }
 
 // Copy returns a copy of the current context that can be safely used outside the request's scope.
