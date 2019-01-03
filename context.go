@@ -74,6 +74,23 @@ func (c *Context) reset() {
 	c.Accepted = nil
 }
 
+func (c *Context) Message(code string, message string, data interface{}) {
+	obj := H{}
+	obj["code"] = code
+	obj["message"] = message
+
+	d, isH := data.(H)
+	if isH {
+		for k, v := range d {
+			obj[k] = v
+		}
+	} else {
+		obj["data"] = data
+	}
+
+	c.JSON(200, obj)
+}
+
 // Copy returns a copy of the current context that can be safely used outside the request's scope.
 // This has to be used when the context has to be passed to a goroutine.
 func (c *Context) Copy() *Context {
