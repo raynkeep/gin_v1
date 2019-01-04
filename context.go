@@ -97,7 +97,7 @@ func (c *Context) Message(code string, message string, data ...interface{}) {
 		}
 	}
 
-	c.JSON(http.StatusOK, obj)
+	c.AbortWithStatusJSON(http.StatusOK, obj)
 }
 
 // Copy returns a copy of the current context that can be safely used outside the request's scope.
