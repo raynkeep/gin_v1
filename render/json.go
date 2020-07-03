@@ -10,7 +10,7 @@ import (
 	"html/template"
 	"net/http"
 
-	"github.com/xiuno/gin/internal/json"
+	"github.com/ryanker/gin_v1/internal/json"
 )
 
 // JSON contains the given interface object.

@@ -1,4 +1,4 @@
-module github.com/xiuno/gin
+module github.com/ryanker/gin_v1
 
 require (
 	github.com/campoy/embedmd v0.0.0-20171205015432-c59ce00e0296

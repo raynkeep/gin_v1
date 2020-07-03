@@ -9,7 +9,7 @@ import (
 	"fmt"
 	"reflect"
 
-	"github.com/xiuno/gin/internal/json"
+	"github.com/ryanker/gin_v1/internal/json"
 )
 
 // ErrorType is an unsigned 64-bit error code as defined in the gin spec.

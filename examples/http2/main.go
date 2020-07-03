@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/xiuno/gin"
+	"github.com/ryanker/gin_v1"
 )
 
 var html = template.Must(template.New("https").Parse(`

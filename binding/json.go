@@ -10,7 +10,7 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/xiuno/gin/internal/json"
+	"github.com/ryanker/gin_v1/internal/json"
 )
 
 // EnableDecoderUseNumber is used to call the UseNumber method on the JSON

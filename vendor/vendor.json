@@ -85,5 +85,5 @@
 			"versionExact": "v2.2.1"
 		}
 	],
-	"rootPath": "github.com/xiuno/gin"
+	"rootPath": "github.com/ryanker/gin_v1"
 }

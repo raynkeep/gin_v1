@@ -15,7 +15,7 @@ import (
 	_ "github.com/campoy/embedmd"
 	_ "github.com/client9/misspell/cmd/misspell"
 	_ "github.com/dustin/go-broadcast"
-	_ "github.com/xiuno/autotls"
+	_ "github.com/gin-gonic/autotls"
 	_ "github.com/jessevdk/go-assets"
 	_ "github.com/manucorporat/stats"
 	_ "github.com/thinkerou/favicon"

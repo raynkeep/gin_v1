@@ -8,7 +8,7 @@ import (
 	"io"
 	"os"
 
-	"github.com/xiuno/gin/binding"
+	"github.com/ryanker/gin_v1/binding"
 )
 
 // ENV_GIN_MODE indicates environment name for gin mode.

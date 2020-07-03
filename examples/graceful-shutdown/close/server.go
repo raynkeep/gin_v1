@@ -8,7 +8,7 @@ import (
 	"os"
 	"os/signal"
 
-	"github.com/xiuno/gin"
+	"github.com/ryanker/gin_v1"
 )
 
 func main() {
