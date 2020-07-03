@@ -6,7 +6,7 @@
 
 package json
 
-import "github.com/liamylian/jsontime"
+import jsontime "github.com/liamylian/jsontime/v2"
 
 var (
 	json = jsontime.ConfigWithCustomTimeFormat
