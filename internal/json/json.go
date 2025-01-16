@@ -10,7 +10,7 @@ package json
 import jsontime "github.com/ryanker/gin_v1/jsontime"
 
 var (
-	json = ConfigWithCustomTimeFormat
+	json = jsontime.ConfigWithCustomTimeFormat
 	// Marshal is exported by gin/json package.
 	Marshal = json.Marshal
 	// MarshalIndent is exported by gin/json package.
