@@ -12,7 +12,7 @@ import (
 	"os"
 	"sync"
 
-	"github.com/ryanker/gin_v1/render"
+	"github.com/ryankeep/gin_v1/render"
 )
 
 const defaultMultipartMemory = 32 << 20 // 32 MB

@@ -1,3 +1,4 @@
+//go:build go1.8
 // +build go1.8
 
 package main
@@ -8,7 +9,7 @@ import (
 	"os"
 	"os/signal"
 
-	"github.com/ryanker/gin_v1"
+	"github.com/ryankeep/gin_v1"
 )
 
 func main() {

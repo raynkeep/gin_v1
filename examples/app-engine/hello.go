@@ -3,7 +3,7 @@ package hello
 import (
 	"net/http"
 
-	"github.com/ryanker/gin_v1"
+	"github.com/ryankeep/gin_v1"
 )
 
 // This function's name is a must. App Engine uses it to drive the requests properly.

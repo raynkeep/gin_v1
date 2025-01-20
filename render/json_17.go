@@ -2,6 +2,7 @@
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file.
 
+//go:build go1.7
 // +build go1.7
 
 package render
@@ -9,7 +10,7 @@ package render
 import (
 	"net/http"
 
-	"github.com/ryanker/gin_v1/internal/json"
+	"github.com/ryankeep/gin_v1/internal/json"
 )
 
 // PureJSON contains the given interface object.

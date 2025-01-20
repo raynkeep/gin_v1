@@ -3,14 +3,14 @@
 This is a complete example to create a single binary with the
 [gin-gonic/gin][gin] Web Server with HTML templates.
 
-[gin]: https://github.com/ryanker/gin_v1
+[gin]: https://github.com/ryankeep/gin_v1
 
 ## How to use
 
 ### Prepare Packages
 
 ```
-go get github.com/ryanker/gin_v1
+go get github.com/ryankeep/gin_v1
 go get github.com/jessevdk/go-assets-builder
 ```
 

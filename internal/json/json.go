@@ -7,7 +7,7 @@
 
 package json
 
-import jsontime "github.com/ryanker/gin_v1/jsontime"
+import jsontime "github.com/ryankeep/gin_v1/jsontime"
 
 var (
 	json = jsontime.ConfigWithCustomTimeFormat

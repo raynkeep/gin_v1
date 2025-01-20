@@ -5,8 +5,8 @@ import (
 	"io/ioutil"
 	"testing"
 
-	"github.com/ryanker/gin_v1/testdata/protoexample"
 	"github.com/golang/protobuf/proto"
+	"github.com/ryankeep/gin_v1/testdata/protoexample"
 	"github.com/stretchr/testify/assert"
 	"github.com/ugorji/go/codec"
 )

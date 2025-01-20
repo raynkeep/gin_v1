@@ -2,6 +2,7 @@
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file.
 
+//go:build go1.7
 // +build go1.7
 
 package gin
@@ -9,7 +10,7 @@ package gin
 import (
 	"time"
 
-	"github.com/ryanker/gin_v1/render"
+	"github.com/ryankeep/gin_v1/render"
 )
 
 // PureJSON serializes the given struct as JSON into the response body.
